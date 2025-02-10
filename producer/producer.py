@@ -14,11 +14,8 @@ KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "sensor-data")
 
 # Load Parquet data
 df = pd.read_parquet("measurements.parquet")
-
-# Convert date_time column to datetime
 df["date_time"] = pd.to_datetime(df["date_time"])
 
-# Find the minimum timestamp
 start_time = df["date_time"].min()
 real_start = datetime.now()
 
@@ -45,7 +42,7 @@ for _, row in df.iterrows():
         "real_timestamp": datetime.now().isoformat(),  # Real timestamp of sending
     }
     producer.send(KAFKA_TOPIC, value=message)
-    logging.info(f"Sent: {message}")  # Logging instead of print
+    logging.info(f"Sent: {message}")
 
 producer.flush()
 producer.close()

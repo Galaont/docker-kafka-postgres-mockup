@@ -48,9 +48,9 @@ consumer = KafkaConsumer(
 def process_and_store_message(message):
     try:
         # Access the message values
-        temperature = message.get('temp')  # Correct field names as per the updated producer
+        temperature = message.get('temp')
         humidity = message.get('humidity')
-        measurement_timestamp = message.get('measurement_timestamp')  # Updated field name
+        measurement_timestamp = message.get('measurement_timestamp')
         real_timestamp = message.get('real_timestamp')  # Real timestamp for logging
 
         # Establish PostgreSQL connection
@@ -60,7 +60,7 @@ def process_and_store_message(message):
         # Insert data into the measurements table
         cursor.execute(
             "INSERT INTO measurements (temp, humidity, date_time, real_timestamp) VALUES (%s, %s, %s, %s)",
-            (temperature, humidity, measurement_timestamp, real_timestamp)  # Insert updated field
+            (temperature, humidity, measurement_timestamp, real_timestamp)
         )
 
         # Commit the transaction
@@ -76,5 +76,5 @@ def process_and_store_message(message):
 # Consume messages
 logger.info(f"Starting consumer for topic: {KAFKA_TOPIC}")
 for message in consumer:
-    logger.info(f"Received message: {message.value}")  # Log the received message
-    process_and_store_message(message.value)  # Process and store the message data
+    logger.info(f"Received message: {message.value}") 
+    process_and_store_message(message.value)

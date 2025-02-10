@@ -1,4 +1,3 @@
-# Use a specific Python image version as the base
 FROM python:3.11-slim
 WORKDIR /app
 COPY requirements.txt .
