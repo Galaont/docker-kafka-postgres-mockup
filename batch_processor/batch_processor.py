@@ -61,12 +61,15 @@ def process_temperature_data(engine, last_temp_time):
     df = pd.read_sql(query, engine, params={"start_time": start_time, "end_time": end_time})
 
     if not df.empty and df.iloc[0]['avg_temp'] is not None:
+        # Convert np.float64 to Python float
+        avg_temp = float(df.iloc[0]['avg_temp'])
+
         with engine.begin() as conn:
             conn.execute(text('''
                 INSERT INTO temperature_report (avg_temp, measurement_start_time, measurement_end_time, real_start_time, real_end_time)
                 VALUES (:avg_temp, :start_time, :end_time, :start_time, :end_time)
             '''), {
-                "avg_temp": df.iloc[0]['avg_temp'],
+                "avg_temp": avg_temp,
                 "start_time": start_time,
                 "end_time": end_time
             })
@@ -88,15 +91,19 @@ def process_humidity_data(engine, last_humidity_time):
     df = pd.read_sql(query, engine, params={"start_time": start_time, "end_time": end_time})
 
     if not df.empty and df.iloc[0]['avg_humidity'] is not None:
+        # Convert np.float64 to Python float
+        avg_humidity = float(df.iloc[0]['avg_humidity'])
+
         with engine.begin() as conn:
             conn.execute(text('''
                 INSERT INTO humidity_report (avg_humidity, measurement_start_time, measurement_end_time, real_start_time, real_end_time)
                 VALUES (:avg_humidity, :start_time, :end_time, :start_time, :end_time)
             '''), {
-                "avg_humidity": df.iloc[0]['avg_humidity'],
+                "avg_humidity": avg_humidity,
                 "start_time": start_time,
                 "end_time": end_time
             })
+
 
 def main():
     engine = create_engine(CONN_STR)
